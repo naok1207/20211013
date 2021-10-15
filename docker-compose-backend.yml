@@ -1,0 +1,32 @@
+version: '3'
+services:
+  backend:
+    build: backend/
+    working_dir: /app/backend
+    command: bin/forever/start.sh
+    volumes:
+      - ./backend:/app/backend
+      - backend_node_modules:/app/backend/node_modules
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+
+  db:
+    image: mysql:5.7
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - graphql_mysql:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      TZ: "Asia/Tokyo"
+
+volumes:
+  backend_node_modules:
+  graphql_mysql:

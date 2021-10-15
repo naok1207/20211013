@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<h1>メンバー一覧</h1>
+<button onclick="searchMember()">表示</button>
+<ul id="memberlist"></ul>
+
+<h2>追加</h2>
+<input type="text" name="" id="name" placeholder="名前">
+<select name="" id="gender">
+  <option value="-">-</option>
+  <option value="man">man</option>
+  <option value="woman">woman</option>
+</select>
+<button onclick="addMember()">追加</button>
+
+
+  <script>
+    const addMember = () => {
+      const gender = document.getElementById('gender').value
+      const name = document.getElementById('name').value
+      if(name && gender !== '-') {
+        data = `
+          mutation{
+            addMember(
+              name: "${name}"
+              gender: "${gender}"
+            ){
+              name
+              gender
+            }
+          }
+        `
+        let url = 'http://localhost:4000/?query='
+        fetch(url + encodeURIComponent(data), {
+          method: 'POST',
+        }).then(response => response.json())
+        .then(result => {
+        })
+      }
+    }
+    const searchMember = () => {
+      let data;
+      data = `
+        {
+          members {
+            name
+            gender
+          }
+        }
+      `
+
+      let url = 'http://localhost:4000/?query='
+      fetch(url + encodeURIComponent(data), {
+        method: 'POST',
+      }).then(response => response.json())
+      .then(result => {
+        const memberslist = document.getElementById('memberlist')
+        memberslist.textContent = null;
+
+        console.log(result);
+        const members = Array.from(result.data['members'])
+        members.map((member) => {
+          const li = document.createElement('li')
+          const items = Object.keys(member)
+          items.map((item) => {
+            li.innerText += `${item}: ${member[item]}, `
+          })
+          memberslist.appendChild(li)
+        })
+      })
+    }
+
+  </script>
+</body>
+</html>

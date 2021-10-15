@@ -1,1 +1,1 @@
-# 20211013
+# react_graphql_template
